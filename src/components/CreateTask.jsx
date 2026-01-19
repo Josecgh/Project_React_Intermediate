@@ -1,13 +1,15 @@
 import "./CreateTask.css";
-import { useContext, useState } from "react";
-import { TaskContext } from "../context/task.context";
+import { useState, useRef } from "react";
 import { createId } from "../utils/utils";
+import { connect } from "react-redux";
 
 
-function CreateTask() {
-  const { addTask } = useContext(TaskContext);
+function CreateTask(props) {
+  const {addTask} = props;
 
   const [taskTitle, setTaskTitle] = useState("");
+
+  const newTaskInputRef = useRef();
 
   const handleInput = (e) => {
     setTaskTitle(e.target.value);
@@ -25,11 +27,17 @@ function CreateTask() {
 
     addTask(newTask);
     setTaskTitle("");
+  };
+
+  const focus = () => {
+    console.log(newTaskInputRef.current);
+    newTaskInputRef.current.focus();
   }
 
   return (
-    <form className="task-form" onSubmit={handleSubmit}>
+    <form className="task-form" onSubmit={handleSubmit} onClick={focus}>
       <input
+       ref={newTaskInputRef}
        type="text"
        className="task-title"
        placeholder="Nueva tarea"
@@ -41,4 +49,12 @@ function CreateTask() {
   )
 }
 
-export default CreateTask
+const mapDispatchToProps = (dispatch) => {
+  return {
+    addTask: (newTask) => {
+      dispatch({ type: "CREATE_TASK", newTask});
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(CreateTask)

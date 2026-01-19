@@ -1,10 +1,7 @@
+import { connect } from "react-redux";
 import "./TaskCard.css";
-import { useContext } from "react";
-import { TaskContext } from "../context/task.context";
 
-function TaskCard({task}) {
-  const { updateTask } = useContext(TaskContext);
-
+function TaskCard({task, updateTask}) {
   const handleInput = (e) => {
     const updatedTask = {...task, title: e.target.value};
     updateTask(updatedTask);
@@ -23,4 +20,12 @@ function TaskCard({task}) {
   )
 }
 
-export default TaskCard
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateTask: (updatedTask) => {
+      dispatch({ type: "UPDATE_TASK", updatedTask})
+    }
+  }
+}
+
+export default connect(null, mapDispatchToProps)(TaskCard)
